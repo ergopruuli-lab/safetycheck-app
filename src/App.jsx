@@ -2000,41 +2000,92 @@ marginTop: '10px',
         ))}
       </div>
       {range === 'custom' && (
+<div
+  style={{
+    display: 'block',
+    gap: '8px',
+    marginBottom: '12px',
+    alignItems: 'flex-start',
+  }}
+>
+<div style={{ flex: 1, marginBottom: '10px' }}>
   <div
     style={{
-      display: 'flex',
-      gap: '8px',
-      marginBottom: '12px',
+      fontSize: '12px',
+      marginBottom: '6px',
+      color: '#6b7280',
     }}
   >
+    Algus
+  </div>
+
+  <div style={{ position: 'relative' }}>
     <input
       type="date"
       value={customFrom}
       onChange={(e) => setCustomFrom(e.target.value)}
       style={{
-        flex: 1,
-        padding: '10px',
+        width: '100%',
+        padding: '10px 36px 10px 10px',
         borderRadius: '12px',
         border: '1px solid #d1d5db',
         fontSize: '14px',
         boxSizing: 'border-box',
       }}
     />
+    <span
+      style={{
+        position: 'absolute',
+        right: '10px',
+        top: '50%',
+        transform: 'translateY(-50%)',
+        pointerEvents: 'none',
+      }}
+    >
+      📅
+    </span>
+  </div>
+</div>
 
+<div style={{ flex: 1 }}>
+  <div
+    style={{
+      fontSize: '12px',
+      marginBottom: '6px',
+      color: '#6b7280',
+    }}
+  >
+    Lõpp
+  </div>
+
+  <div style={{ position: 'relative' }}>
     <input
       type="date"
       value={customTo}
       onChange={(e) => setCustomTo(e.target.value)}
       style={{
-        flex: 1,
-        padding: '10px',
+        width: '100%',
+        padding: '10px 36px 10px 10px',
         borderRadius: '12px',
         border: '1px solid #d1d5db',
         fontSize: '14px',
         boxSizing: 'border-box',
       }}
     />
+    <span
+      style={{
+        position: 'absolute',
+        right: '10px',
+        top: '50%',
+        transform: 'translateY(-50%)',
+        pointerEvents: 'none',
+      }}
+    >
+      📅
+    </span>
   </div>
+</div>
+</div>
 )}
 
     {adminView && (

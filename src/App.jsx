@@ -22,11 +22,19 @@ useEffect(() => {
 
   const [registerPassword, setRegisterPassword] = useState('')
   const [registerEmail, setRegisterEmail] = useState('')
+  const [birthDay, setBirthDay] = useState('')
+const [birthMonth, setBirthMonth] = useState('')
+const [birthYear, setBirthYear] = useState('')
   const [language, setLanguage] = useState(null)
   const [logs, setLogs] = useState([])
   const [range, setRange] = useState('all')
-  const [customFrom, setCustomFrom] = useState('')
-const [customTo, setCustomTo] = useState('')
+const [fromDay, setFromDay] = useState('')
+const [fromMonth, setFromMonth] = useState('')
+const [fromYear, setFromYear] = useState('')
+
+const [toDay, setToDay] = useState('')
+const [toMonth, setToMonth] = useState('')
+const [toYear, setToYear] = useState('')
   const [isAdmin, setIsAdmin] = useState(false)
   const [adminView, setAdminView] = useState(false)
   const [street, setStreet] = useState('')
@@ -142,7 +150,10 @@ const risks = [
     outline: 'none',
     boxSizing: 'border-box',
   }
-
+const days = Array.from({ length: 31 }, (_, i) => i + 1)
+const months = Array.from({ length: 12 }, (_, i) => i + 1)
+const currentYear = new Date().getFullYear()
+const years = Array.from({ length: 100 }, (_, i) => currentYear - i)
 const titleStyle = {
   margin: 0,
   fontSize: '28px',
@@ -219,23 +230,46 @@ let fromDate = null
 let toDate = null
 
 if (range === 'custom') {
-  if (customFrom) {
-    fromDate = new Date(customFrom).toISOString()
+  if (fromYear && fromMonth && fromDay) {
+    const start = new Date(
+      Number(fromYear),
+      Number(fromMonth) - 1,
+      Number(fromDay),
+      0,
+      0,
+      0,
+      0
+    )
+    fromDate = start.toISOString()
   }
 
-  if (customTo) {
-    const end = new Date(customTo)
-    end.setHours(23, 59, 59, 999)
+  if (toYear && toMonth && toDay) {
+    const end = new Date(
+      Number(toYear),
+      Number(toMonth) - 1,
+      Number(toDay),
+      23,
+      59,
+      59,
+      999
+    )
     toDate = end.toISOString()
   }
 } else {
   fromDate = getDateFromRange()
 }
-if (range === 'custom' && !customFrom && !customTo) {
+if (
+  range === 'custom' &&
+  !fromDay &&
+  !fromMonth &&
+  !fromYear &&
+  !toDay &&
+  !toMonth &&
+  !toYear
+) {
   setLogs([])
   return
 }
-
 console.log('FROM DATE:', fromDate)
 console.log('TO DATE:', toDate)
 
@@ -281,7 +315,7 @@ console.log('RANGE:', range)
 if (screen === 'logs') {
   loadLogs()
 }
-}, [screen, adminView, range, customFrom, customTo])
+}, [screen, adminView, range, fromDay, fromMonth, fromYear, toDay, toMonth, toYear])
 useEffect(() => {
   if (screen === 'login') {
     setLoginEmail('')
@@ -1003,20 +1037,82 @@ setScreen('home')
 </div>
       
 
-      <div style={{ width: '100%', marginBottom: '14px' }}>
-        <div
-          style={{
-            fontSize: '12px',
-            color: '#6b7280',
-            marginBottom: '6px',
-            paddingLeft: '4px',
-            textAlign: 'left',
-          }}
-        >
-          Sünnikuupäev
-        </div>
-        <input type="date" style={{ ...inputStyle, marginBottom: 0 }} />
-      </div>
+    <div style={{ width: '100%', marginBottom: '14px' }}>
+  <div
+    style={{
+      fontSize: '12px',
+      color: '#6b7280',
+      marginBottom: '6px',
+      paddingLeft: '4px',
+      textAlign: 'left',
+    }}
+  >
+    Sünnikuupäev
+  </div>
+
+  <div
+    style={{
+      display: 'grid',
+      gridTemplateColumns: '1fr 1fr 1fr',
+      gap: '8px',
+      width: '100%',
+    }}
+  >
+    <select
+      value={birthDay}
+      onChange={(e) => setBirthDay(e.target.value)}
+      style={{
+        ...inputStyle,
+        marginBottom: 0,
+        background: '#fff',
+        padding: '14px 12px',
+      }}
+    >
+      <option value="">Päev</option>
+      {days.map((day) => (
+        <option key={day} value={day}>
+          {day}
+        </option>
+      ))}
+    </select>
+
+    <select
+      value={birthMonth}
+      onChange={(e) => setBirthMonth(e.target.value)}
+      style={{
+        ...inputStyle,
+        marginBottom: 0,
+        background: '#fff',
+        padding: '14px 12px',
+      }}
+    >
+      <option value="">Kuu</option>
+      {months.map((month) => (
+        <option key={month} value={month}>
+          {month}
+        </option>
+      ))}
+    </select>
+
+    <select
+      value={birthYear}
+      onChange={(e) => setBirthYear(e.target.value)}
+      style={{
+        ...inputStyle,
+        marginBottom: 0,
+        background: '#fff',
+        padding: '14px 12px',
+      }}
+    >
+      <option value="">Aasta</option>
+      {years.map((year) => (
+        <option key={year} value={year}>
+          {year}
+        </option>
+      ))}
+    </select>
+  </div>
+</div>
 
       <div style={{ width: '100%', marginBottom: '14px' }}>
         <div
@@ -1050,7 +1146,8 @@ setScreen('home')
         >
           Parool
         </div>
-  <input
+<input
+  type="text"
   value={registerPassword}
   onChange={(e) => setRegisterPassword(e.target.value)}
   style={{ ...inputStyle, marginBottom: 0 }}
@@ -1104,14 +1201,16 @@ setScreen('home')
       </div>
 
       <button
-   onClick={async () => {
-  if (!safetyCardFile) {
-    alert('Tööohutuskaart on kohustuslik')
+onClick={async () => {
+  if (!birthDay || !birthMonth || !birthYear) {
+    alert('Vali sünnikuupäev')
     return
   }
 
-  if (!registerPassword) {
-    alert('Sisesta parool')
+  const formattedBirthDate = `${birthYear}-${String(birthMonth).padStart(2, '0')}-${String(birthDay).padStart(2, '0')}`
+
+  if (!safetyCardFile) {
+    alert('Tööohutuskaart on kohustuslik')
     return
   }
 
@@ -1130,6 +1229,7 @@ const { data, error } = await supabase.auth.signUp({
       full_name: `${workerName} ${lastName}`.trim(),
       company_name: companyName,
       role: 'user',
+      birth_date: formattedBirthDate,
     },
   },
 })
@@ -1146,6 +1246,9 @@ setLastName('')
 setRegisterEmail('')
 setRegisterPassword('')
 setSafetyCardFile(null)
+setBirthDay('')
+setBirthMonth('')
+setBirthYear('')
 setSuccessType('register')
 setScreen('success')
 }}
@@ -1978,11 +2081,15 @@ marginTop: '10px',
             onClick={() => {
   setRange(r.key)
 
-  if (r.key === 'custom') {
-    setCustomFrom('')
-    setCustomTo('')
-    setLogs([])
-  }
+if (r.key === 'custom') {
+  setFromDay('')
+  setFromMonth('')
+  setFromYear('')
+  setToDay('')
+  setToMonth('')
+  setToYear('')
+  setLogs([])
+}
 }}
             style={{
               flex: 1,
@@ -1999,41 +2106,165 @@ marginTop: '10px',
           </button>
         ))}
       </div>
-      {range === 'custom' && (
+{range === 'custom' && (
   <div
     style={{
-      display: 'flex',
-      gap: '8px',
+      width: '100%',
       marginBottom: '12px',
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '12px',
     }}
   >
-    <input
-      type="date"
-      value={customFrom}
-      onChange={(e) => setCustomFrom(e.target.value)}
-      style={{
-        flex: 1,
-        padding: '10px',
-        borderRadius: '12px',
-        border: '1px solid #d1d5db',
-        fontSize: '14px',
-        boxSizing: 'border-box',
-      }}
-    />
+    <div style={{ width: '100%' }}>
+      <div
+        style={{
+          fontSize: '12px',
+          marginBottom: '6px',
+          color: '#6b7280',
+        }}
+      >
+        Algus
+      </div>
 
-    <input
-      type="date"
-      value={customTo}
-      onChange={(e) => setCustomTo(e.target.value)}
-      style={{
-        flex: 1,
-        padding: '10px',
-        borderRadius: '12px',
-        border: '1px solid #d1d5db',
-        fontSize: '14px',
-        boxSizing: 'border-box',
-      }}
-    />
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr 1fr',
+          gap: '8px',
+          width: '100%',
+        }}
+      >
+        <select
+          value={fromDay}
+          onChange={(e) => setFromDay(e.target.value)}
+          style={{
+            ...inputStyle,
+            marginBottom: 0,
+            background: '#fff',
+            padding: '14px 12px',
+          }}
+        >
+          <option value="">Päev</option>
+          {days.map((day) => (
+            <option key={day} value={day}>
+              {day}
+            </option>
+          ))}
+        </select>
+
+        <select
+          value={fromMonth}
+          onChange={(e) => setFromMonth(e.target.value)}
+          style={{
+            ...inputStyle,
+            marginBottom: 0,
+            background: '#fff',
+            padding: '14px 12px',
+          }}
+        >
+          <option value="">Kuu</option>
+          {months.map((month) => (
+            <option key={month} value={month}>
+              {month}
+            </option>
+          ))}
+        </select>
+
+        <select
+          value={fromYear}
+          onChange={(e) => setFromYear(e.target.value)}
+          style={{
+            ...inputStyle,
+            marginBottom: 0,
+            background: '#fff',
+            padding: '14px 12px',
+          }}
+        >
+          <option value="">Aasta</option>
+          {years.map((year) => (
+            <option key={year} value={year}>
+              {year}
+            </option>
+          ))}
+        </select>
+      </div>
+    </div>
+
+    <div style={{ width: '100%' }}>
+      <div
+        style={{
+          fontSize: '12px',
+          marginBottom: '6px',
+          color: '#6b7280',
+        }}
+      >
+        Lõpp
+      </div>
+
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr 1fr',
+          gap: '8px',
+          width: '100%',
+        }}
+      >
+        <select
+          value={toDay}
+          onChange={(e) => setToDay(e.target.value)}
+          style={{
+            ...inputStyle,
+            marginBottom: 0,
+            background: '#fff',
+            padding: '14px 12px',
+          }}
+        >
+          <option value="">Päev</option>
+          {days.map((day) => (
+            <option key={day} value={day}>
+              {day}
+            </option>
+          ))}
+        </select>
+
+        <select
+          value={toMonth}
+          onChange={(e) => setToMonth(e.target.value)}
+          style={{
+            ...inputStyle,
+            marginBottom: 0,
+            background: '#fff',
+            padding: '14px 12px',
+          }}
+        >
+          <option value="">Kuu</option>
+          {months.map((month) => (
+            <option key={month} value={month}>
+              {month}
+            </option>
+          ))}
+        </select>
+
+        <select
+          value={toYear}
+          onChange={(e) => setToYear(e.target.value)}
+          style={{
+            ...inputStyle,
+            marginBottom: 0,
+            background: '#fff',
+            padding: '14px 12px',
+          }}
+        >
+          <option value="">Aasta</option>
+          {years.map((year) => (
+            <option key={year} value={year}>
+              {year}
+            </option>
+          ))}
+        </select>
+      </div>
+    </div>
   </div>
 )}
 

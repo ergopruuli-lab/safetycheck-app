@@ -69,7 +69,7 @@ useEffect(() => {
       data: { session },
     } = await supabase.auth.getSession()
 
-  if (session?.user) {
+if (session?.user?.email_confirmed_at) {
   setIsLoggedIn(true)
   setScreen('home')
   loadProfile(session.user)
@@ -82,19 +82,36 @@ useEffect(() => {
 
   checkSession()
 
+
+const {
+  data: { subscription },
+} = supabase.auth.onAuthStateChange(async (_event, session) => {
+  if (!session?.user) {
+    setIsLoggedIn(false)
+    setIsAdmin(false)
+    setProfile(null)
+    setScreen('login')
+    return
+  }
+
   const {
-    data: { subscription },
-  } = supabase.auth.onAuthStateChange((_event, session) => {
- if (session?.user) {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser()
+
+  if (error || !user?.email_confirmed_at) {
+    await supabase.auth.signOut()
+    setIsLoggedIn(false)
+    setIsAdmin(false)
+    setProfile(null)
+    setScreen('login')
+    return
+  }
+
   setIsLoggedIn(true)
   setScreen('home')
-  loadProfile(session.user)
-} else {
-  setIsLoggedIn(false)
-  setProfile(null)
-  setScreen('login')
-}
-  })
+  loadProfile(user)
+})
 
   return () => subscription.unsubscribe()
 }, [])
@@ -255,6 +272,7 @@ if (range === 'custom') {
 } else {
   fromDate = getDateFromRange()
 }
+
 if (
   range === 'custom' &&
   !fromDay &&
@@ -267,6 +285,7 @@ if (
   setLogs([])
   return
 }
+
 console.log('FROM DATE:', fromDate)
 console.log('TO DATE:', toDate)
 
@@ -292,22 +311,22 @@ console.log('LOGS DATA:', data)
 console.log('LOGS ERROR:', error)
 console.log('ADMIN DATA:', data)
 
-    if (error) {
-      console.log(error.message)
-      return
-    }
+if (error) {
+  console.log(error.message)
+  return
+}
 
-    const formattedLogs = data.map((log) => ({
-      dateTime: new Date(log.created_at).toLocaleString(),
-      address: log.address,
-      workerName: log.worker_name,
-      workTypes: log.work_types || [],
-      risks: log.risks || [],
-      measures: log.measures || [],
-    }))
+const formattedLogs = data.map((log) => ({
+  dateTime: new Date(log.created_at).toLocaleString(),
+  address: log.address,
+  workerName: log.worker_name,
+  workTypes: log.work_types || [],
+  risks: log.risks || [],
+  measures: log.measures || [],
+}))
 
-    setLogs(formattedLogs)
-  }
+setLogs(formattedLogs)
+}
 console.log('RANGE:', range)
 if (screen === 'logs') {
   loadLogs()
@@ -510,6 +529,21 @@ left: 0,
     width: '100%',
     height: '33.34%',
     background: '#ffffff',
+  }}
+/>
+<div
+  style={{
+    position: 'absolute',
+    top: '4%',
+    left: '8%',
+    width: '84%',
+    height: '38%',
+    background:
+      'linear-gradient(180deg, rgba(255,255,255,0.78), rgba(255,255,255,0.18))',
+    borderRadius: '18px',
+    transform: 'rotate(-8deg)',
+    zIndex: 2,
+    pointerEvents: 'none',
   }}
 />
 </button>
@@ -847,7 +881,16 @@ onClick={async () => {
     alert(error.message)
     return
   }
-
+if (!data.user.email_confirmed_at) {
+  await supabase.auth.signOut()
+  setIsLoggedIn(false)
+  setIsAdmin(false)
+  setProfile(null)
+  setLoginPassword('')
+  setScreen('login')
+  alert('Kinnita oma e-post enne sisselogimist')
+  return
+}
   const { data: profile } = await supabase
     .from('profiles')
     .select('role')
@@ -1032,9 +1075,6 @@ setScreen('home')
     </div>
   </div>
 </div>
-      
-
-   
 
       <div style={{ width: '100%', marginBottom: '14px' }}>
         <div
@@ -1068,6 +1108,7 @@ setScreen('home')
         >
           Parool
         </div>
+
 <input
   type="text"
   value={registerPassword}
@@ -1123,13 +1164,16 @@ setScreen('home')
       </div>
 
       <button
-onClick={async () => {
-
-
+   onClick={async () => {
   if (!safetyCardFile) {
     alert('Tööohutuskaart on kohustuslik')
     return
   }
+  if (!registerPassword) {
+    alert('Sisesta parool')
+    return
+  }
+
 
  const email = registerEmail.trim()
 
@@ -1155,7 +1199,6 @@ if (error) {
   return
 }
 
-alert('Konto loodud. Kontrolli oma emaili ja kinnita registreerimine.')
 setCompanyName('')
 setWorkerName('')
 setLastName('')
@@ -1919,8 +1962,8 @@ setScreen('success')
           margin: 0,
         }}
       >
-        {successType === 'register'
-  ? 'Vajuta all Kodu ikoonile'
+  {successType === 'register'
+  ? 'Kontrolli oma e-posti ja kinnita registreerimine enne sisselogimist.'
   : 'Turvalist tööd!'}
       </p>
 
@@ -2003,6 +2046,11 @@ if (r.key === 'custom') {
   setToYear('')
   setLogs([])
 }
+  if (r.key === 'custom') {
+    setCustomFrom('')
+    setCustomTo('')
+    setLogs([])
+  }
 }}
             style={{
               flex: 1,
@@ -2019,7 +2067,6 @@ if (r.key === 'custom') {
           </button>
         ))}
       </div>
-{range === 'custom' && (
   <div
     style={{
       width: '100%',
@@ -2179,7 +2226,7 @@ if (r.key === 'custom') {
       </div>
     </div>
   </div>
-)}
+      
 
     {adminView && (
   <button
@@ -2261,7 +2308,7 @@ if (r.key === 'custom') {
 )}
 
       
-      {screen !== 'language' && (
+     {screen !== 'language' && (
         <div
          style={{
   position: 'fixed',
@@ -2290,6 +2337,11 @@ if (r.key === 'custom') {
           >
            <button
 onClick={() => {
+  if (!isLoggedIn) {
+    alert('Logi sisse enne')
+    return
+  }
+
   if (screen === 'login' || screen === 'register' || screen === 'language') return
   setScreen('home')
 }}
@@ -2306,7 +2358,8 @@ onClick={() => {
     : screen === 'home'
     ? '#111111'
     : '#9ca3af',
-    cursor: 'pointer',
+cursor: isLoggedIn ? 'pointer' : 'not-allowed',
+opacity: isLoggedIn ? 1 : 0.5,
     gap: '4px',
     width: '72px',
     padding: '0',
@@ -2340,6 +2393,11 @@ onClick={() => {
 </button>
 <button
 onClick={() => {
+  if (!isLoggedIn) {
+    alert('Logi sisse enne')
+    return
+  }
+
   if (screen === 'login' || screen === 'register' || screen === 'language') return
   setAdminView(false)
   setScreen('logs')
@@ -2352,7 +2410,8 @@ onClick={() => {
     alignItems: 'center',
     justifyContent: 'center',
     color: screen === 'logs' ? '#111111' : '#9ca3af',
-    cursor: 'pointer',
+    cursor: isLoggedIn ? 'pointer' : 'not-allowed',
+opacity: isLoggedIn ? 1 : 0.5,
     gap: '4px',
     width: '72px',
     padding: '0',
@@ -2390,6 +2449,11 @@ onClick={() => {
 {isAdmin && (
   <button
 onClick={() => {
+  if (!isLoggedIn) {
+    alert('Logi sisse enne')
+    return
+  }
+
   if (screen === 'login' || screen === 'register' || screen === 'language') return
   setAdminView(true)
   setScreen('logs')
@@ -2404,7 +2468,8 @@ onClick={() => {
       alignItems: 'center',
       justifyContent: 'center',
       color: screen === 'admin-logs' ? '#111111' : '#9ca3af',
-      cursor: 'pointer',
+      cursor: isLoggedIn ? 'pointer' : 'not-allowed',
+opacity: isLoggedIn ? 1 : 0.5,
       gap: '4px',
       width: '72px',
       padding: '0',

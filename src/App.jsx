@@ -85,8 +85,10 @@ if (session?.user?.email_confirmed_at) {
 
 const {
   data: { subscription },
-} = supabase.auth.onAuthStateChange(async (_event, session) => {
-  if (!session?.user) {
+} = supabase.auth.onAuthStateChange((_event, session) => {
+  const user = session?.user
+
+  if (!user) {
     setIsLoggedIn(false)
     setIsAdmin(false)
     setProfile(null)
@@ -94,13 +96,7 @@ const {
     return
   }
 
-  const {
-    data: { user },
-    error,
-  } = await supabase.auth.getUser()
-
-  if (error || !user?.email_confirmed_at) {
-    await supabase.auth.signOut()
+  if (!user.email_confirmed_at) {
     setIsLoggedIn(false)
     setIsAdmin(false)
     setProfile(null)
@@ -138,7 +134,6 @@ const workTypes = [
   'Ilmakaitse paigaldamine',
   'Ilmakaitse demonteerimine',
   'Tõstetööd',
-  'Muu',
 ]
 
 const risks = [
@@ -864,6 +859,7 @@ autoComplete="new-password"
 
             <button
 onClick={async () => {
+
   const email = loginEmail.trim()
   const password = loginPassword.trim()
 
@@ -881,16 +877,18 @@ onClick={async () => {
     alert(error.message)
     return
   }
-if (!data.user.email_confirmed_at) {
-  await supabase.auth.signOut()
-  setIsLoggedIn(false)
-  setIsAdmin(false)
-  setProfile(null)
-  setLoginPassword('')
-  setScreen('login')
-  alert('Kinnita oma e-post enne sisselogimist')
-  return
-}
+
+  if (!data.user.email_confirmed_at) {
+    await supabase.auth.signOut()
+    setIsLoggedIn(false)
+    setIsAdmin(false)
+    setProfile(null)
+    setLoginPassword('')
+    setScreen('login')
+    alert('Kinnita oma e-post enne sisselogimist')
+    return
+  }
+
   const { data: profile } = await supabase
     .from('profiles')
     .select('role')
@@ -903,10 +901,10 @@ if (!data.user.email_confirmed_at) {
     setIsAdmin(false)
   }
 
-setIsLoggedIn(true)
-setLoginEmail('')
-setLoginPassword('')
-setScreen('home')
+  setIsLoggedIn(true)
+  setLoginEmail('')
+  setLoginPassword('')
+  setScreen('home')
 }}
               style={{
                 width: '100%',

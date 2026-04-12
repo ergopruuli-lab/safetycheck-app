@@ -22,9 +22,6 @@ useEffect(() => {
 
   const [registerPassword, setRegisterPassword] = useState('')
   const [registerEmail, setRegisterEmail] = useState('')
-  const [birthDay, setBirthDay] = useState('')
-const [birthMonth, setBirthMonth] = useState('')
-const [birthYear, setBirthYear] = useState('')
   const [language, setLanguage] = useState(null)
   const [logs, setLogs] = useState([])
   const [range, setRange] = useState('all')
@@ -1037,82 +1034,7 @@ setScreen('home')
 </div>
       
 
-    <div style={{ width: '100%', marginBottom: '14px' }}>
-  <div
-    style={{
-      fontSize: '12px',
-      color: '#6b7280',
-      marginBottom: '6px',
-      paddingLeft: '4px',
-      textAlign: 'left',
-    }}
-  >
-    Sünnikuupäev
-  </div>
-
-  <div
-    style={{
-      display: 'grid',
-      gridTemplateColumns: '1fr 1fr 1fr',
-      gap: '8px',
-      width: '100%',
-    }}
-  >
-    <select
-      value={birthDay}
-      onChange={(e) => setBirthDay(e.target.value)}
-      style={{
-        ...inputStyle,
-        marginBottom: 0,
-        background: '#fff',
-        padding: '14px 12px',
-      }}
-    >
-      <option value="">Päev</option>
-      {days.map((day) => (
-        <option key={day} value={day}>
-          {day}
-        </option>
-      ))}
-    </select>
-
-    <select
-      value={birthMonth}
-      onChange={(e) => setBirthMonth(e.target.value)}
-      style={{
-        ...inputStyle,
-        marginBottom: 0,
-        background: '#fff',
-        padding: '14px 12px',
-      }}
-    >
-      <option value="">Kuu</option>
-      {months.map((month) => (
-        <option key={month} value={month}>
-          {month}
-        </option>
-      ))}
-    </select>
-
-    <select
-      value={birthYear}
-      onChange={(e) => setBirthYear(e.target.value)}
-      style={{
-        ...inputStyle,
-        marginBottom: 0,
-        background: '#fff',
-        padding: '14px 12px',
-      }}
-    >
-      <option value="">Aasta</option>
-      {years.map((year) => (
-        <option key={year} value={year}>
-          {year}
-        </option>
-      ))}
-    </select>
-  </div>
-</div>
+   
 
       <div style={{ width: '100%', marginBottom: '14px' }}>
         <div
@@ -1202,12 +1124,7 @@ setScreen('home')
 
       <button
 onClick={async () => {
-  if (!birthDay || !birthMonth || !birthYear) {
-    alert('Vali sünnikuupäev')
-    return
-  }
 
-  const formattedBirthDate = `${birthYear}-${String(birthMonth).padStart(2, '0')}-${String(birthDay).padStart(2, '0')}`
 
   if (!safetyCardFile) {
     alert('Tööohutuskaart on kohustuslik')
@@ -1229,7 +1146,6 @@ const { data, error } = await supabase.auth.signUp({
       full_name: `${workerName} ${lastName}`.trim(),
       company_name: companyName,
       role: 'user',
-      birth_date: formattedBirthDate,
     },
   },
 })
@@ -1246,9 +1162,6 @@ setLastName('')
 setRegisterEmail('')
 setRegisterPassword('')
 setSafetyCardFile(null)
-setBirthDay('')
-setBirthMonth('')
-setBirthYear('')
 setSuccessType('register')
 setScreen('success')
 }}

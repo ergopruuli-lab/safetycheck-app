@@ -1010,7 +1010,7 @@ onClick={async () => {
         backdropFilter: 'blur(14px)',
         WebkitBackdropFilter: 'blur(14px)',
         borderRadius: '28px',
-        padding: '30px 12px 90px',
+    padding: '30px 12px 12px',
         boxShadow: '0 18px 45px rgba(0,0,0,0.12)',
         border: '1px solid rgba(255,255,255,0.7)',
         display: 'flex',
@@ -1183,22 +1183,16 @@ onClick={async () => {
             {safetyCardFile ? safetyCardFile.name : 'Lae fail üles'}
           </span>
 
-      <input
+<input
   type="file"
   style={{ display: 'none' }}
-  onChange={(e) => {
-    const file = e.target.files[0] || null
-    console.log('SELECTED FILE:', file)
-    setSafetyCardFile(file)
-  }}
+  onChange={(e) => setSafetyCardFile(e.target.files[0] || null)}
 />
         </label>
       </div>
 
       <button
    onClick={async () => {
-       console.log('REGISTER BUTTON CLICKED')
-    console.log('SAFETY FILE BEFORE REGISTER:', safetyCardFile)
   if (!safetyCardFile) {
     
     alert('Tööohutuskaart on kohustuslik')
@@ -1228,9 +1222,6 @@ const { data, error } = await supabase.auth.signUp({
     },
   },
 })
-
-console.log('REGISTER DATA:', data)
-console.log('REGISTER ERROR:', error)
 
 if (error) {
   alert(error.message)

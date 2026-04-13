@@ -340,6 +340,36 @@ useEffect(() => {
   }
 }, [screen])
 useEffect(() => {
+  const checkConfirmedAfterReturn = async () => {
+    if (screen !== 'success' || successType !== 'register') return
+
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser()
+
+    if (!error && user?.email_confirmed_at) {
+      setScreen('login')
+    }
+  }
+
+  const handleVisibilityChange = () => {
+    if (document.visibilityState === 'visible') {
+      checkConfirmedAfterReturn()
+    }
+  }
+
+  window.addEventListener('focus', checkConfirmedAfterReturn)
+  document.addEventListener('visibilitychange', handleVisibilityChange)
+
+  return () => {
+    window.removeEventListener('focus', checkConfirmedAfterReturn)
+    document.removeEventListener('visibilitychange', handleVisibilityChange)
+  }
+}, [screen, successType])
+// 👆 SIIN LÕPPEB
+
+useEffect(() => {
   if (screen === 'location') {
     setStreet('')
     setHouseNumber('')
@@ -1153,17 +1183,24 @@ onClick={async () => {
             {safetyCardFile ? safetyCardFile.name : 'Lae fail üles'}
           </span>
 
-          <input
-            type="file"
-            style={{ display: 'none' }}
-            onChange={(e) => setSafetyCardFile(e.target.files[0] || null)}
-          />
+      <input
+  type="file"
+  style={{ display: 'none' }}
+  onChange={(e) => {
+    const file = e.target.files[0] || null
+    console.log('SELECTED FILE:', file)
+    setSafetyCardFile(file)
+  }}
+/>
         </label>
       </div>
 
       <button
    onClick={async () => {
+       console.log('REGISTER BUTTON CLICKED')
+    console.log('SAFETY FILE BEFORE REGISTER:', safetyCardFile)
   if (!safetyCardFile) {
+    
     alert('Tööohutuskaart on kohustuslik')
     return
   }
@@ -1191,6 +1228,9 @@ const { data, error } = await supabase.auth.signUp({
     },
   },
 })
+
+console.log('REGISTER DATA:', data)
+console.log('REGISTER ERROR:', error)
 
 if (error) {
   alert(error.message)

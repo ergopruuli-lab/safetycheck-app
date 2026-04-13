@@ -398,13 +398,21 @@ useEffect(() => {
 position: 'relative',
 width: '100%',
 height: '100dvh',
-   overflowY:
-  screen === 'risk-measures' || screen === 'logs' || screen === 'register'
+overflowY:
+  screen === 'risk-measures' ||
+  screen === 'logs' ||
+  screen === 'register' ||
+  screen === 'login' ||
+  screen === 'location'
     ? 'auto'
     : 'hidden',
 overflowX: 'hidden',
 touchAction:
-  screen === 'risk-measures' || screen === 'logs' || screen === 'register'
+  screen === 'risk-measures' ||
+  screen === 'logs' ||
+  screen === 'register' ||
+  screen === 'login' ||
+  screen === 'location'
     ? 'pan-y'
     : 'none',
 WebkitOverflowScrolling: 'touch',

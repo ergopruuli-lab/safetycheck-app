@@ -823,7 +823,7 @@ onClick={() => {
                 width: '460px',
                 height: '230px',
                 objectFit: 'contain',
-                marginTop: '10px',
+                marginTop: '-20px',
               }}
             />
 
@@ -843,7 +843,7 @@ onClick={() => {
               width: '100%',
               maxWidth: '300px',
               position: 'relative',
-              top: '280px',
+              top: '240px',
               background: 'rgba(255,255,255,0.82)',
               backdropFilter: 'blur(14px)',
               WebkitBackdropFilter: 'blur(14px)',

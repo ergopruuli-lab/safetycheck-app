@@ -1010,7 +1010,7 @@ onClick={async () => {
         backdropFilter: 'blur(14px)',
         WebkitBackdropFilter: 'blur(14px)',
         borderRadius: '28px',
-        padding: '30px 12px 12px',
+        padding: '30px 12px 90px',
         boxShadow: '0 18px 45px rgba(0,0,0,0.12)',
         border: '1px solid rgba(255,255,255,0.7)',
         display: 'flex',

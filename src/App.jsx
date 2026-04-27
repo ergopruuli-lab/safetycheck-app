@@ -814,7 +814,7 @@ onClick={() => {
               flexDirection: 'column',
               alignItems: 'center',
               zIndex: 2,
-            }}
+            }}                 
           >
             <img
               src={logo}

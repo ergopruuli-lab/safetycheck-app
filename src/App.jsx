@@ -423,10 +423,10 @@ WebkitOverflowScrolling: 'touch',
         background: '#f4f6f2',
   padding:
   screen === 'risk-measures'
-    ? '100px 24px 140'
+    ? 'calc(env(safe-area-inset-top) + 100px) 24px 140px'
     : screen === 'logs'
-    ? '100px 24px 110px'
-    : '80px 20px 80px',
+    ? 'calc(env(safe-area-inset-top) + 100px) 24px 110px'
+    : 'calc(env(safe-area-inset-top) + 80px) 20px 80px',
         fontFamily: 'Arial, sans-serif',
         boxSizing: 'border-box',
       }}
@@ -434,7 +434,7 @@ WebkitOverflowScrolling: 'touch',
 {isLoggedIn && profile?.full_name && (
 <div style={{
   position: 'fixed',
-  top: 20,
+  top: 'calc(env(safe-area-inset-top) + 20px)',
   right: 20,
   width: 40,
   height: 40,
@@ -454,8 +454,19 @@ WebkitOverflowScrolling: 'touch',
 )}
       <div
         style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: 'env(safe-area-inset-top)',
+          background: '#111827',
+          zIndex: 11,
+        }}
+      />
+      <div
+        style={{
          position: 'fixed',
-top: 0,
+top: 'env(safe-area-inset-top)',
 left: 0,
           width: '100%',
           height: '70px',

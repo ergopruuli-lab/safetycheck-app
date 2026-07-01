@@ -433,7 +433,7 @@ WebkitOverflowScrolling: 'touch',
     >
 {isLoggedIn && profile?.full_name && (
 <div style={{
-  position: 'absolute',
+  position: 'fixed',
   top: 20,
   right: 20,
   width: 40,
@@ -454,7 +454,7 @@ WebkitOverflowScrolling: 'touch',
 )}
       <div
         style={{
-         position: 'absolute',
+         position: 'fixed',
 top: 0,
 left: 0,
           width: '100%',
@@ -2066,7 +2066,6 @@ marginTop: '10px',
   { key: 'all', label: 'Kõik' },
   { key: 'week', label: 'Nädal' },
   { key: 'month', label: 'Kuu' },
-  { key: 'year', label: 'Aasta' },
   { key: 'custom', label: 'Vahemik' },
 ].map((r) => (
           <button
@@ -2104,6 +2103,7 @@ if (r.key === 'custom') {
           </button>
         ))}
       </div>
+  {range === 'custom' && (
   <div
     style={{
       width: '100%',
@@ -2263,7 +2263,8 @@ if (r.key === 'custom') {
       </div>
     </div>
   </div>
-      
+  )}
+
 
     {adminView && (
   <button

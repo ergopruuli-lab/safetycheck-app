@@ -194,6 +194,8 @@ const exportCSV = () => {
     'Kuupäev',
     'Aadress',
     'Töötaja',
+    'E-post',
+    'Liitunud äpiga',
     'Tööliik',
     'Riskid',
     'Meetmed',
@@ -203,6 +205,8 @@ const exportCSV = () => {
     log.dateTime || '',
     log.address || '',
     log.workerName || '',
+    log.email || '',
+    log.joinedAt || '',
     Array.isArray(log.workTypes) ? log.workTypes.join(', ') : '',
     Array.isArray(log.risks) ? log.risks.join(', ') : '',
     Array.isArray(log.measures) ? log.measures.join(', ') : '',
@@ -288,7 +292,7 @@ console.log('TO DATE:', toDate)
 
 let query = supabase
   .from('logs')
-  .select('*')
+  .select('*, profiles(email, created_at)')
   .order('created_at', { ascending: false })
 
 if (fromDate) {
@@ -317,6 +321,10 @@ const formattedLogs = data.map((log) => ({
   dateTime: new Date(log.created_at).toLocaleString(),
   address: log.address,
   workerName: log.worker_name,
+  email: log.profiles?.email || '',
+  joinedAt: log.profiles?.created_at
+    ? new Date(log.profiles.created_at).toLocaleString()
+    : '',
   workTypes: log.work_types || [],
   risks: log.risks || [],
   measures: log.measures || [],
@@ -465,7 +473,7 @@ WebkitOverflowScrolling: 'touch',
           pointerEvents: 'none',
         }}
       >
-        v11
+        v12
       </div>
       <div
         style={{

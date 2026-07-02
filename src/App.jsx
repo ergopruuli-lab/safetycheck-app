@@ -433,7 +433,7 @@ WebkitOverflowScrolling: 'touch',
     >
 {isLoggedIn && profile?.full_name && (
 <div style={{
-  position: 'fixed',
+  position: 'absolute',
   top: 20,
   right: 20,
   width: 40,
@@ -454,7 +454,7 @@ WebkitOverflowScrolling: 'touch',
 )}
       <div
         style={{
-          position: 'fixed',
+          position: 'absolute',
           top: 3,
           left: 8,
           fontSize: '10px',
@@ -463,11 +463,11 @@ WebkitOverflowScrolling: 'touch',
           pointerEvents: 'none',
         }}
       >
-        v9
+        v10
       </div>
       <div
         style={{
-         position: 'fixed',
+         position: 'absolute',
 top: 0,
 left: 0,
           width: '100%',

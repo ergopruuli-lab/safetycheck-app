@@ -2358,15 +2358,26 @@ if (r.key === 'custom') {
 
       
      {screen !== 'language' && (
+       <div
+         style={{
+           position: 'fixed',
+           bottom: 0,
+           left: 0,
+           width: '100%',
+           height: 'env(safe-area-inset-bottom)',
+           background: '#f4f6f2',
+           zIndex: 998,
+         }}
+       />
+     )}
+     {screen !== 'language' && (
         <div
          style={{
   position: 'fixed',
-  bottom: '0',
+  bottom: 'env(safe-area-inset-bottom)',
   left: '0',
   width: '100%',
-  height: '48px',
-  paddingTop: '10px',
-  boxSizing: 'border-box',
+  height: '54px',
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',

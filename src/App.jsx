@@ -2364,7 +2364,7 @@ if (r.key === 'custom') {
   bottom: '0',
   left: '0',
   width: '100%',
-  height: '64px',
+  height: '48px',
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',

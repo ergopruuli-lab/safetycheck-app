@@ -53,14 +53,16 @@ useEffect(() => {
   const loadProfile = async (user) => {
     const { data, error } = await supabase
       .from('profiles')
-      .select('full_name')
+      .select('full_name, role')
       .eq('id', user.id)
       .single()
 
     if (!error) {
       setProfile(data)
+      setIsAdmin(data.role === 'admin')
     } else {
       setProfile(null)
+      setIsAdmin(false)
     }
   }
 
@@ -463,7 +465,7 @@ WebkitOverflowScrolling: 'touch',
           pointerEvents: 'none',
         }}
       >
-        v10
+        v11
       </div>
       <div
         style={{

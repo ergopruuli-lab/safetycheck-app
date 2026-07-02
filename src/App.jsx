@@ -2361,10 +2361,12 @@ if (r.key === 'custom') {
         <div
          style={{
   position: 'fixed',
-  bottom: 'env(safe-area-inset-bottom)',
+  bottom: '0',
   left: '0',
   width: '100%',
   height: '70px',
+  paddingBottom: 'env(safe-area-inset-bottom)',
+  boxSizing: 'content-box',
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',

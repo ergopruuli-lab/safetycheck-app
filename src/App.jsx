@@ -199,6 +199,7 @@ const exportCSV = () => {
     'Tööliik',
     'Riskid',
     'Meetmed',
+    'Kinnitatud',
   ]
 
   const rows = logs.map((log) => [
@@ -210,6 +211,7 @@ const exportCSV = () => {
     Array.isArray(log.workTypes) ? log.workTypes.join(', ') : '',
     Array.isArray(log.risks) ? log.risks.join(', ') : '',
     Array.isArray(log.measures) ? log.measures.join(', ') : '',
+    `Tööliik, riskid ja meetmed kinnitatud — ${log.dateTime || ''}`,
   ])
 
   const csvContent = [headers, ...rows]
@@ -473,7 +475,7 @@ WebkitOverflowScrolling: 'touch',
           pointerEvents: 'none',
         }}
       >
-        v12
+        v13
       </div>
       <div
         style={{

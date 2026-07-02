@@ -2365,6 +2365,8 @@ if (r.key === 'custom') {
   left: '0',
   width: '100%',
   height: '48px',
+  paddingTop: '10px',
+  boxSizing: 'border-box',
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',

@@ -592,15 +592,19 @@ WebkitOverflowScrolling: 'touch',
       <div
         style={{
           position: 'absolute',
-          top: 3,
-          left: 8,
-          fontSize: '10px',
-          color: 'rgba(255,255,255,0.55)',
+          top: 6,
+          left: 6,
+          fontSize: '11px',
+          fontWeight: 'bold',
+          color: '#ffffff',
+          background: '#dc2626',
+          padding: '2px 6px',
+          borderRadius: '6px',
           zIndex: 1000,
           pointerEvents: 'none',
         }}
       >
-        v14
+        v15
       </div>
       <div
         style={{

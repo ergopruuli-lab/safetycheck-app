@@ -3,6 +3,104 @@ import { supabase } from './supabase'
 import logo from './logo.png'
 import helmetIcon from './helmet.png'
 
+// UI tekstid kolmes keeles (et = eesti, en = inglise, ru = vene)
+const TR = {
+  loginSubtitle: { et: 'Jätkamiseks logi sisse', en: 'Log in to continue', ru: 'Войдите, чтобы продолжить' },
+  email: { et: 'E-post', en: 'Email', ru: 'Эл. почта' },
+  password: { et: 'Parool', en: 'Password', ru: 'Пароль' },
+  alertEmailPassword: { et: 'Sisesta email ja parool', en: 'Enter email and password', ru: 'Введите эл. почту и пароль' },
+  alertConfirmEmail: { et: 'Kinnita oma e-post enne sisselogimist', en: 'Confirm your email before logging in', ru: 'Подтвердите эл. почту перед входом' },
+  logIn: { et: 'Logi sisse', en: 'Log in', ru: 'Войти' },
+  noAccount: { et: 'Pole kontot?', en: 'No account?', ru: 'Нет аккаунта?' },
+  register: { et: 'Registreeru', en: 'Sign up', ru: 'Регистрация' },
+  companyName: { et: 'Ettevõtte nimi', en: 'Company name', ru: 'Название компании' },
+  firstName: { et: 'Eesnimi', en: 'First name', ru: 'Имя' },
+  lastName: { et: 'Perekonnanimi', en: 'Last name', ru: 'Фамилия' },
+  safetyCard: { et: 'Tööohutuskaart', en: 'Safety card', ru: 'Карта безопасности труда' },
+  uploadFile: { et: 'Lae fail üles', en: 'Upload file', ru: 'Загрузить файл' },
+  alertSafetyCardRequired: { et: 'Tööohutuskaart on kohustuslik', en: 'Safety card is required', ru: 'Карта безопасности труда обязательна' },
+  alertEnterPassword: { et: 'Sisesta parool', en: 'Enter password', ru: 'Введите пароль' },
+  alertEnterEmail: { et: 'Sisesta e-post', en: 'Enter email', ru: 'Введите эл. почту' },
+  haveAccount: { et: 'Konto juba olemas?', en: 'Already have an account?', ru: 'Уже есть аккаунт?' },
+  welcomeNew: { et: 'Tere tulemast!', en: 'Welcome!', ru: 'Добро пожаловать!' },
+  welcomeBack: { et: 'Tere tulemast tagasi!', en: 'Welcome back!', ru: 'С возвращением!' },
+  startNewCheck: { et: 'Alusta uut ohutuskontrolli', en: 'Start a new safety check', ru: 'Начать новую проверку безопасности' },
+  logOut: { et: 'Logi välja', en: 'Log out', ru: 'Выйти' },
+  workLocation: { et: 'Tööasukoht', en: 'Work location', ru: 'Место работы' },
+  enterAddress: { et: 'Sisesta aadress, kus töötad', en: 'Enter the address where you work', ru: 'Введите адрес места работы' },
+  street: { et: 'Tänav', en: 'Street', ru: 'Улица' },
+  houseNo: { et: 'Nr', en: 'No.', ru: '№' },
+  city: { et: 'Linn', en: 'City', ru: 'Город' },
+  postalCode: { et: 'Postikood', en: 'Postal code', ru: 'Индекс' },
+  nextRisks: { et: 'Edasi: vali riskid ja meetmed', en: 'Next: select risks and measures', ru: 'Далее: выберите риски и меры' },
+  identifyRisks: { et: 'Tuvasta riskid ja ohutusmeetmed', en: 'Identify risks and safety measures', ru: 'Определите риски и меры безопасности' },
+  workType: { et: 'Tööliik', en: 'Work type', ru: 'Вид работ' },
+  risksLabel: { et: 'Riskid', en: 'Risks', ru: 'Риски' },
+  safetyMeasures: { et: 'Ohutusmeetmed', en: 'Safety measures', ru: 'Меры безопасности' },
+  measuresLabel: { et: 'Meetmed', en: 'Measures', ru: 'Меры' },
+  confirmAware: { et: 'Kinnitan, et olen ohutusmeetmetest teadlik ja järgin neid töö käigus!', en: 'I confirm that I am aware of the safety measures and will follow them during the work!', ru: 'Подтверждаю, что ознакомлен с мерами безопасности и буду соблюдать их во время работы!' },
+  alertUserNotFound: { et: 'Kasutajat ei leitud', en: 'User not found', ru: 'Пользователь не найден' },
+  confirmMeasures: { et: 'Kinnita ohutusmeetmed →', en: 'Confirm safety measures →', ru: 'Подтвердить меры безопасности →' },
+  successRegistered: { et: 'Kasutaja registreeritud', en: 'User registered', ru: 'Пользователь зарегистрирован' },
+  successSaved: { et: 'Andmed salvestatud', en: 'Data saved', ru: 'Данные сохранены' },
+  successCheckEmail: { et: 'Kontrolli oma e-posti ja kinnita registreerimine enne sisselogimist.', en: 'Check your email and confirm registration before logging in.', ru: 'Проверьте эл. почту и подтвердите регистрацию перед входом.' },
+  successSafeWork: { et: 'Turvalist tööd!', en: 'Work safely!', ru: 'Безопасной работы!' },
+  logsAll: { et: 'Kõik logid', en: 'All logs', ru: 'Все записи' },
+  logsWeek: { et: 'See nädal', en: 'This week', ru: 'Эта неделя' },
+  logsMonth: { et: 'See kuu', en: 'This month', ru: 'Этот месяц' },
+  logsYear: { et: 'See aasta', en: 'This year', ru: 'Этот год' },
+  logsRange: { et: 'Valitud vahemik', en: 'Selected range', ru: 'Выбранный период' },
+  tabAll: { et: 'Kõik', en: 'All', ru: 'Все' },
+  tabWeek: { et: 'Nädal', en: 'Week', ru: 'Неделя' },
+  tabMonth: { et: 'Kuu', en: 'Month', ru: 'Месяц' },
+  tabRange: { et: 'Vahemik', en: 'Range', ru: 'Период' },
+  start: { et: 'Algus', en: 'Start', ru: 'Начало' },
+  end: { et: 'Lõpp', en: 'End', ru: 'Конец' },
+  day: { et: 'Päev', en: 'Day', ru: 'День' },
+  month: { et: 'Kuu', en: 'Month', ru: 'Месяц' },
+  year: { et: 'Aasta', en: 'Year', ru: 'Год' },
+  exportCsvEt: { et: 'Ekspordi CSV (eesti)', en: 'Export CSV (Estonian)', ru: 'Экспорт CSV (эст.)' },
+  exportCsvEn: { et: 'Ekspordi CSV (inglise)', en: 'Export CSV (English)', ru: 'Экспорт CSV (англ.)' },
+  noLogs: { et: 'Logikirjeid veel ei ole', en: 'No log entries yet', ru: 'Записей пока нет' },
+  navHome: { et: 'Kodu', en: 'Home', ru: 'Главная' },
+  navLogs: { et: 'Logi', en: 'Logs', ru: 'Записи' },
+  navAdmin: { et: 'Admin', en: 'Admin', ru: 'Админ' },
+  navLanguage: { et: 'Keel', en: 'Language', ru: 'Язык' },
+  alertLoginFirst: { et: 'Logi sisse enne', en: 'Log in first', ru: 'Сначала войдите' },
+}
+
+// Riskide / meetmete / tööliikide kuvatavad sildid.
+// Salvestamisel ja CSV-s kasutatakse alati eestikeelset kanoonilist väärtust,
+// siit tuleb ainult ekraanil kuvatav tõlge.
+const OPTION_LABELS = {
+  // meetmed
+  'Turvarakmed': { en: 'Safety harness', ru: 'Страховочная привязь' },
+  'YoYo turvakinnitus': { en: 'YoYo fall arrester', ru: 'Блокирующее устройство YoYo' },
+  'Kiiver': { en: 'Helmet', ru: 'Каска' },
+  'Turvajalatsid': { en: 'Safety shoes', ru: 'Защитная обувь' },
+  'Helkurriietus': { en: 'Hi-vis clothing', ru: 'Светоотражающая одежда' },
+  'Töökindad': { en: 'Work gloves', ru: 'Рабочие перчатки' },
+  'Kaitseprillid': { en: 'Safety glasses', ru: 'Защитные очки' },
+  'Varustus kontrollitud ja turvaline': { en: 'Equipment checked and safe', ru: 'Оборудование проверено и безопасно' },
+  // tööliigid
+  'Tellingu paigaldamine': { en: 'Scaffold assembly', ru: 'Монтаж лесов' },
+  'Tellingu demonteerimine': { en: 'Scaffold dismantling', ru: 'Демонтаж лесов' },
+  'Ilmakaitse paigaldamine': { en: 'Weather protection assembly', ru: 'Монтаж защиты от непогоды' },
+  'Ilmakaitse demonteerimine': { en: 'Weather protection dismantling', ru: 'Демонтаж защиты от непогоды' },
+  'Tõstetööd': { en: 'Lifting work', ru: 'Подъёмные работы' },
+  // riskid
+  'Kukkumis oht': { en: 'Fall hazard', ru: 'Опасность падения' },
+  'Libisemis oht': { en: 'Slipping hazard', ru: 'Опасность скольжения' },
+  'Platvormi kokkuvarisemise oht': { en: 'Platform collapse hazard', ru: 'Опасность обрушения платформы' },
+  'Komistamis oht': { en: 'Tripping hazard', ru: 'Опасность спотыкания' },
+  'Tuleoht': { en: 'Fire hazard', ru: 'Опасность пожара' },
+  'Tellingu kokkuvarisemise oht': { en: 'Scaffold collapse hazard', ru: 'Опасность обрушения лесов' },
+  'Tõstetööde riskid': { en: 'Lifting work risks', ru: 'Риски подъёмных работ' },
+  'Elektri oht': { en: 'Electrical hazard', ru: 'Опасность поражения током' },
+  'Materjalide käsitsemise riskid': { en: 'Material handling risks', ru: 'Риски обращения с материалами' },
+  'Tööriistade kasutamise riskid': { en: 'Tool use risks', ru: 'Риски использования инструментов' },
+}
+
 function App() {
   const [profile, setProfile] = useState(null)
   const [screen, setScreen] = useState('language')
@@ -151,6 +249,13 @@ const risks = [
   'Tööriistade kasutamise riskid',
 ]
 
+// Aktiivne keel (kui pole valitud, näita eesti keeles)
+const lang = language || 'et'
+// t('võti') tagastab teksti aktiivses keeles, muidu eesti keeles
+const t = (key) => TR[key]?.[lang] ?? TR[key]?.et ?? key
+// Riski/meetme/tööliigi kuvatav silt aktiivses keeles (salvestatakse ikka eesti keeles)
+const optLabel = (val) => (lang === 'et' ? val : OPTION_LABELS[val]?.[lang] ?? val)
+
   const inputStyle = {
     width: '100%',
     padding: '14px 16px',
@@ -187,20 +292,38 @@ const getDateFromRange = () => {
   return date.toISOString()
 }
 
-const exportCSV = () => {
+// locale: 'et' = eestikeelne väljavõte, 'en' = ingliskeelne (ametitele esitamiseks)
+const exportCSV = (locale = 'et') => {
   if (!logs.length) return
 
-  const headers = [
-    'Kuupäev',
-    'Aadress',
-    'Töötaja',
-    'E-post',
-    'Liitunud äpiga',
-    'Tööliik',
-    'Riskid',
-    'Meetmed',
-    'Kinnitatud',
-  ]
+  const en = locale === 'en'
+
+  const headers = en
+    ? [
+        'Date',
+        'Address',
+        'Worker',
+        'Email',
+        'Joined app',
+        'Work type',
+        'Risks',
+        'Measures',
+        'Confirmed',
+      ]
+    : [
+        'Kuupäev',
+        'Aadress',
+        'Töötaja',
+        'E-post',
+        'Liitunud äpiga',
+        'Tööliik',
+        'Riskid',
+        'Meetmed',
+        'Kinnitatud',
+      ]
+
+  // Salvestatud väärtus on alati eesti keeles — ingliskeelses väljavõttes tõlgime
+  const tr = (val) => (en ? OPTION_LABELS[val]?.en ?? val : val)
 
   const rows = logs.map((log) => [
     log.dateTime || '',
@@ -208,10 +331,12 @@ const exportCSV = () => {
     log.workerName || '',
     log.email || '',
     log.joinedAt || '',
-    Array.isArray(log.workTypes) ? log.workTypes.join(', ') : '',
-    Array.isArray(log.risks) ? log.risks.join(', ') : '',
-    Array.isArray(log.measures) ? log.measures.join(', ') : '',
-    `Tööliik, riskid ja meetmed kinnitatud — ${log.dateTime || ''}`,
+    Array.isArray(log.workTypes) ? log.workTypes.map(tr).join(', ') : '',
+    Array.isArray(log.risks) ? log.risks.map(tr).join(', ') : '',
+    Array.isArray(log.measures) ? log.measures.map(tr).join(', ') : '',
+    en
+      ? `Work type, risks and measures confirmed — ${log.dateTime || ''}`
+      : `Tööliik, riskid ja meetmed kinnitatud — ${log.dateTime || ''}`,
   ])
 
   const csvContent = [headers, ...rows]
@@ -225,7 +350,7 @@ const exportCSV = () => {
 
   const link = document.createElement('a')
   link.href = url
-  link.download = 'ohutuslogi.csv'
+  link.download = en ? 'safety-log.csv' : 'ohutuslogi.csv'
   document.body.appendChild(link)
   link.click()
   document.body.removeChild(link)
@@ -464,6 +589,19 @@ WebkitOverflowScrolling: 'touch',
     {profile.full_name.charAt(0).toUpperCase()}
   </div>
 )}
+      <div
+        style={{
+          position: 'absolute',
+          top: 3,
+          left: 8,
+          fontSize: '10px',
+          color: 'rgba(255,255,255,0.55)',
+          zIndex: 1000,
+          pointerEvents: 'none',
+        }}
+      >
+        v14
+      </div>
       <div
         style={{
          position: 'absolute',
@@ -846,7 +984,7 @@ onClick={() => {
                 color: '#5f6b66',
               }}
             >
-              Jätkamiseks logi sisse
+              {t('loginSubtitle')}
             </p>
           </div>
 
@@ -870,7 +1008,7 @@ onClick={() => {
           >
             <input
   type="email"
-  placeholder="E-post"
+  placeholder={t('email')}
   value={loginEmail}
   onChange={(e) => setLoginEmail(e.target.value)}
   name="no-autofill-email"
@@ -889,7 +1027,7 @@ autoComplete="off"
 
            <input
   type="password"
-  placeholder="Parool"
+  placeholder={t('password')}
   value={loginPassword}
   onChange={(e) => setLoginPassword(e.target.value)}
   name="no-autofill-password"
@@ -914,7 +1052,7 @@ onClick={async () => {
   const password = loginPassword.trim()
 
   if (!email || !password) {
-    alert('Sisesta email ja parool')
+    alert(t('alertEmailPassword'))
     return
   }
 
@@ -935,7 +1073,7 @@ onClick={async () => {
     setProfile(null)
     setLoginPassword('')
     setScreen('login')
-    alert('Kinnita oma e-post enne sisselogimist')
+    alert(t('alertConfirmEmail'))
     return
   }
 
@@ -968,7 +1106,7 @@ onClick={async () => {
                 cursor: 'pointer',
               }}
             >
-              Logi sisse
+              {t('logIn')}
             </button>
 
             <p
@@ -978,7 +1116,7 @@ onClick={async () => {
                 color: '#6b7280',
               }}
             >
-              Pole kontot?{' '}
+              {t('noAccount')}{' '}
               <span
                 onClick={() => setScreen('register')}
                 style={{
@@ -987,7 +1125,7 @@ onClick={async () => {
                   cursor: 'pointer',
                 }}
               >
-                Registreeru
+                {t('register')}
               </span>
             </p>
           </div>
@@ -1039,7 +1177,7 @@ onClick={async () => {
       }}
     >
       <h2 style={{ ...titleStyle, marginBottom: '24px' }}>
-  Registreeru
+  {t('register')}
 </h2>
 <div style={{ width: '100%', marginBottom: '14px' }}>
   <div
@@ -1051,7 +1189,7 @@ onClick={async () => {
       textAlign: 'left',
     }}
   >
-    Ettevõtte nimi
+    {t('companyName')}
   </div>
 
   <input
@@ -1084,7 +1222,7 @@ onClick={async () => {
           textAlign: 'left',
         }}
       >
-        Eesnimi
+        {t('firstName')}
       </div>
       <input
         type="text"
@@ -1108,7 +1246,7 @@ onClick={async () => {
           textAlign: 'left',
         }}
       >
-        Perekonnanimi
+        {t('lastName')}
       </div>
       <input
         type="text"
@@ -1134,7 +1272,7 @@ onClick={async () => {
             textAlign: 'left',
           }}
         >
-          E-post
+          {t('email')}
         </div>
         <input
   type="email"
@@ -1154,7 +1292,7 @@ onClick={async () => {
             textAlign: 'left',
           }}
         >
-          Parool
+          {t('password')}
         </div>
 
 <input
@@ -1175,7 +1313,7 @@ onClick={async () => {
             textAlign: 'left',
           }}
         >
-          Tööohutuskaart
+          {t('safetyCard')}
         </div>
 
         <label
@@ -1200,7 +1338,7 @@ onClick={async () => {
               color: '#6b7280',
             }}
           >
-            {safetyCardFile ? safetyCardFile.name : 'Lae fail üles'}
+            {safetyCardFile ? safetyCardFile.name : t('uploadFile')}
           </span>
 
 <input
@@ -1215,11 +1353,11 @@ onClick={async () => {
    onClick={async () => {
   if (!safetyCardFile) {
     
-    alert('Tööohutuskaart on kohustuslik')
+    alert(t('alertSafetyCardRequired'))
     return
   }
   if (!registerPassword) {
-    alert('Sisesta parool')
+    alert(t('alertEnterPassword'))
     return
   }
 
@@ -1227,7 +1365,7 @@ onClick={async () => {
  const email = registerEmail.trim()
 
   if (!email) {
-    alert('Sisesta e-post')
+    alert(t('alertEnterEmail'))
     return
   }
 
@@ -1269,7 +1407,7 @@ setScreen('success')
           cursor: 'pointer',
         }}
       >
-        Registreeru
+        {t('register')}
       </button>
 
       <p
@@ -1279,7 +1417,7 @@ setScreen('success')
           color: '#6b7280',
         }}
       >
-        Konto juba olemas?{' '}
+        {t('haveAccount')}{' '}
         <span
           onClick={() => setScreen('login')}
           style={{
@@ -1288,7 +1426,7 @@ setScreen('success')
             cursor: 'pointer',
           }}
         >
-          Logi sisse
+          {t('logIn')}
         </span>
       </p>
     </div>
@@ -1310,8 +1448,8 @@ setScreen('success')
           >
 <h2 style={titleStyle}>
   {successType === 'register'
-    ? 'Tere tulemast!'
-    : 'Tere tulemast tagasi!'}
+    ? t('welcomeNew')
+    : t('welcomeBack')}
 </h2>
 
      <button
@@ -1344,7 +1482,7 @@ onTouchEnd={(e) => {
   transition: 'transform 0.1s ease',
 }}
 >
-  Alusta uut ohutuskontrolli
+  {t('startNewCheck')}
 </button>
 
 <button
@@ -1394,7 +1532,7 @@ onTouchEnd={(e) => {
     <path d="M9 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h4" />
   </svg>
 
-  Logi välja
+  {t('logOut')}
 </button>
           </div>
 
@@ -1423,7 +1561,7 @@ onTouchEnd={(e) => {
             }}
           >
    <h2 style={titleStyle}>
-  Tööasukoht
+  {t('workLocation')}
 </h2>
 
             <p
@@ -1435,7 +1573,7 @@ onTouchEnd={(e) => {
   textAlign: 'center',
 }}
             >
-              Sisesta aadress, kus töötad
+              {t('enterAddress')}
             </p>
 
            <div style={{ width: '100%', marginBottom: '14px' }}>
@@ -1452,7 +1590,7 @@ onTouchEnd={(e) => {
     textAlign: 'left',
   }}
 >
-  Tänav
+  {t('street')}
 </div>
 
  <input
@@ -1494,7 +1632,7 @@ autoComplete="off"
     justifyContent: 'flex-start',
   }}
 >
-  Nr
+  {t('houseNo')}
 </div>
 
      <input
@@ -1522,7 +1660,7 @@ autoComplete="off"
                   textAlign: 'left',
                 }}
               >
-                Linn
+                {t('city')}
               </div>
  <input
   type="text"
@@ -1602,7 +1740,7 @@ autoComplete="off"
                   textAlign: 'left',
                 }}
               >
-                Postikood
+                {t('postalCode')}
               </div>
              <input
   type="text"
@@ -1621,7 +1759,7 @@ autoComplete="off"
     cursor: isWorkLocationValid ? 'pointer' : 'not-allowed',
   }}
 >
-  Edasi: vali riskid ja meetmed
+  {t('nextRisks')}
 </button>
           </div>
         </>
@@ -1639,7 +1777,7 @@ autoComplete="off"
   }}
 >
   <h2 style={{ ...titleStyle, marginTop: '0', marginBottom: '30px' }}>
-    Tuvasta riskid ja ohutusmeetmed
+    {t('identifyRisks')}
   </h2>
 
   <div
@@ -1688,7 +1826,7 @@ autoComplete="off"
       color: '#1f2937',
     }}
   >
-    Tööliik
+    {t('workType')}
   </p>
 </div>
 
@@ -1726,7 +1864,7 @@ style={{
   cursor: 'pointer',
 }}
   >
-    {type}
+    {optLabel(type)}
   </button>
 ))}
       
@@ -1774,7 +1912,7 @@ style={{
       color: '#1f2937',
     }}
   >
-    Riskid
+    {t('risksLabel')}
   </p>
 </div>
   <div
@@ -1804,7 +1942,7 @@ style={{
       cursor: 'pointer',
     }}
   >
-    {risk}
+    {optLabel(risk)}
   </button>
 ))}
   </div>
@@ -1847,7 +1985,7 @@ style={{
       color: '#1f2937',
     }}
   >
-    Ohutusmeetmed
+    {t('safetyMeasures')}
   </p>
 </div>
 
@@ -1879,7 +2017,7 @@ style={{
       cursor: 'pointer',
     }}
   >
-    {measure}
+    {optLabel(measure)}
   </button>
 ))}
   </div>
@@ -1892,7 +2030,7 @@ style={{
             checked={safetyConfirmed}
             onChange={(e) => setSafetyConfirmed(e.target.checked)}
           />{' '}
-          Kinnitan, et olen ohutusmeetmetest teadlik ja järgin neid töö käigus!
+          {t('confirmAware')}
         </label>
       </div>
 
@@ -1908,7 +2046,7 @@ const user = session?.user
 console.log('USER:', user)
 
 if (!user) {
-  alert('Kasutajat ei leitud')
+  alert(t('alertUserNotFound'))
   return
 }
 
@@ -1972,7 +2110,7 @@ setScreen('success')
     transition: 'transform 0.1s ease, box-shadow 0.1s ease',
   }}
 >
-  Kinnita ohutusmeetmed →
+  {t('confirmMeasures')}
 </button>
     </div>
   </div>
@@ -2000,8 +2138,8 @@ setScreen('success')
   }}
 >
   {successType === 'register'
-    ? 'Kasutaja registreeritud'
-    : 'Andmed salvestatud'}
+    ? t('successRegistered')
+    : t('successSaved')}
 </h2>
 
       <p
@@ -2012,8 +2150,8 @@ setScreen('success')
         }}
       >
   {successType === 'register'
-  ? 'Kontrolli oma e-posti ja kinnita registreerimine enne sisselogimist.'
-  : 'Turvalist tööd!'}
+  ? t('successCheckEmail')
+  : t('successSafeWork')}
       </p>
 
       <img
@@ -2054,14 +2192,14 @@ marginTop: '10px',
   }}
 >
  {range === 'all'
-  ? 'Kõik logid'
+  ? t('logsAll')
   : range === 'week'
-  ? 'See nädal'
+  ? t('logsWeek')
   : range === 'month'
-  ? 'See kuu'
+  ? t('logsMonth')
   : range === 'year'
-  ? 'See aasta'
-  : 'Valitud vahemik'}
+  ? t('logsYear')
+  : t('logsRange')}
 </h2>
 
       <div
@@ -2075,10 +2213,10 @@ marginTop: '10px',
         }}
       >
      {[
-  { key: 'all', label: 'Kõik' },
-  { key: 'week', label: 'Nädal' },
-  { key: 'month', label: 'Kuu' },
-  { key: 'custom', label: 'Vahemik' },
+  { key: 'all', label: t('tabAll') },
+  { key: 'week', label: t('tabWeek') },
+  { key: 'month', label: t('tabMonth') },
+  { key: 'custom', label: t('tabRange') },
 ].map((r) => (
           <button
             key={r.key}
@@ -2133,7 +2271,7 @@ if (r.key === 'custom') {
           color: '#6b7280',
         }}
       >
-        Algus
+        {t('start')}
       </div>
 
       <div
@@ -2154,7 +2292,7 @@ if (r.key === 'custom') {
             padding: '14px 12px',
           }}
         >
-          <option value="">Päev</option>
+          <option value="">{t('day')}</option>
           {days.map((day) => (
             <option key={day} value={day}>
               {day}
@@ -2172,7 +2310,7 @@ if (r.key === 'custom') {
             padding: '14px 12px',
           }}
         >
-          <option value="">Kuu</option>
+          <option value="">{t('month')}</option>
           {months.map((month) => (
             <option key={month} value={month}>
               {month}
@@ -2190,7 +2328,7 @@ if (r.key === 'custom') {
             padding: '14px 12px',
           }}
         >
-          <option value="">Aasta</option>
+          <option value="">{t('year')}</option>
           {years.map((year) => (
             <option key={year} value={year}>
               {year}
@@ -2208,7 +2346,7 @@ if (r.key === 'custom') {
           color: '#6b7280',
         }}
       >
-        Lõpp
+        {t('end')}
       </div>
 
       <div
@@ -2229,7 +2367,7 @@ if (r.key === 'custom') {
             padding: '14px 12px',
           }}
         >
-          <option value="">Päev</option>
+          <option value="">{t('day')}</option>
           {days.map((day) => (
             <option key={day} value={day}>
               {day}
@@ -2247,7 +2385,7 @@ if (r.key === 'custom') {
             padding: '14px 12px',
           }}
         >
-          <option value="">Kuu</option>
+          <option value="">{t('month')}</option>
           {months.map((month) => (
             <option key={month} value={month}>
               {month}
@@ -2265,7 +2403,7 @@ if (r.key === 'custom') {
             padding: '14px 12px',
           }}
         >
-          <option value="">Aasta</option>
+          <option value="">{t('year')}</option>
           {years.map((year) => (
             <option key={year} value={year}>
               {year}
@@ -2279,22 +2417,40 @@ if (r.key === 'custom') {
 
 
     {adminView && (
-  <button
-    onClick={exportCSV}
-    style={{
-      width: '100%',
-      padding: '12px',
-      marginBottom: '12px',
-      borderRadius: '12px',
-      border: 'none',
-      background: '#111827',
-      color: '#fff',
-      fontSize: '14px',
-      fontWeight: '600',
-    }}
-  >
-    Ekspordi CSV
-  </button>
+  <div style={{ display: 'flex', gap: '8px', marginBottom: '12px' }}>
+    <button
+      onClick={() => exportCSV('et')}
+      style={{
+        flex: 1,
+        padding: '12px',
+        borderRadius: '12px',
+        border: 'none',
+        background: '#111827',
+        color: '#fff',
+        fontSize: '14px',
+        fontWeight: '600',
+        cursor: 'pointer',
+      }}
+    >
+      {t('exportCsvEt')}
+    </button>
+    <button
+      onClick={() => exportCSV('en')}
+      style={{
+        flex: 1,
+        padding: '12px',
+        borderRadius: '12px',
+        border: '1px solid #111827',
+        background: '#ffffff',
+        color: '#111827',
+        fontSize: '14px',
+        fontWeight: '600',
+        cursor: 'pointer',
+      }}
+    >
+      {t('exportCsvEn')}
+    </button>
+  </div>
 )}
 
       {logs.length === 0 ? (
@@ -2308,7 +2464,7 @@ if (r.key === 'custom') {
             textAlign: 'center',
           }}
         >
-          Logikirjeid veel ei ole
+          {t('noLogs')}
         </div>
       ) : (
         logs.map((log, index) => (
@@ -2337,18 +2493,18 @@ if (r.key === 'custom') {
             </div>
 
             <div>
-              <div style={{ fontSize: '12px', color: '#9ca3af' }}>Tööliik</div>
-              <div>{log.workTypes.join(', ')}</div>
+              <div style={{ fontSize: '12px', color: '#9ca3af' }}>{t('workType')}</div>
+              <div>{log.workTypes.map(optLabel).join(', ')}</div>
             </div>
 
             <div>
-              <div style={{ fontSize: '12px', color: '#9ca3af' }}>Riskid</div>
-              <div>{log.risks.join(', ')}</div>
+              <div style={{ fontSize: '12px', color: '#9ca3af' }}>{t('risksLabel')}</div>
+              <div>{log.risks.map(optLabel).join(', ')}</div>
             </div>
 
             <div>
-              <div style={{ fontSize: '12px', color: '#9ca3af' }}>Meetmed</div>
-              <div>{log.measures.join(', ')}</div>
+              <div style={{ fontSize: '12px', color: '#9ca3af' }}>{t('measuresLabel')}</div>
+              <div>{log.measures.map(optLabel).join(', ')}</div>
             </div>
           </div>
         ))
@@ -2388,7 +2544,7 @@ if (r.key === 'custom') {
            <button
 onClick={() => {
   if (!isLoggedIn) {
-    alert('Logi sisse enne')
+    alert(t('alertLoginFirst'))
     return
   }
 
@@ -2432,19 +2588,18 @@ opacity: isLoggedIn ? 1 : 0.5,
     style={{
       fontSize: '11px',
       lineHeight: '11px',
-      width: '26px',
+      width: '100%',
       textAlign: 'center',
       whiteSpace: 'nowrap',
-      
     }}
   >
-    Kodu
+    {t('navHome')}
   </span>
 </button>
 <button
 onClick={() => {
   if (!isLoggedIn) {
-    alert('Logi sisse enne')
+    alert(t('alertLoginFirst'))
     return
   }
 
@@ -2489,18 +2644,19 @@ opacity: isLoggedIn ? 1 : 0.5,
     style={{
       fontSize: '11px',
       lineHeight: '11px',
-      width: '26px',
+      width: '100%',
       textAlign: 'center',
+      whiteSpace: 'nowrap',
     }}
   >
-    Logi
+    {t('navLogs')}
   </span>
 </button>
 {isAdmin && (
   <button
 onClick={() => {
   if (!isLoggedIn) {
-    alert('Logi sisse enne')
+    alert(t('alertLoginFirst'))
     return
   }
 
@@ -2543,10 +2699,12 @@ opacity: isLoggedIn ? 1 : 0.5,
   style={{
     fontSize: '11px',
     lineHeight: '11px',
+    width: '100%',
     textAlign: 'center',
+    whiteSpace: 'nowrap',
   }}
 >
-  Admin
+  {t('navAdmin')}
 </span>
   </button>
 )}
@@ -2587,11 +2745,12 @@ opacity: isLoggedIn ? 1 : 0.5,
     style={{
       fontSize: '11px',
       lineHeight: '11px',
-      width: '26px',
+      width: '100%',
       textAlign: 'center',
+      whiteSpace: 'nowrap',
     }}
   >
-    Keel
+    {t('navLanguage')}
   </span>
 </button>
           </div>

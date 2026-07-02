@@ -2361,7 +2361,7 @@ if (r.key === 'custom') {
         <div
          style={{
   position: 'fixed',
-  bottom: '0',
+  bottom: 'env(safe-area-inset-bottom)',
   left: '0',
   width: '100%',
   height: '70px',

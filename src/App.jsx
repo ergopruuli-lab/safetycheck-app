@@ -454,6 +454,19 @@ WebkitOverflowScrolling: 'touch',
 )}
       <div
         style={{
+          position: 'fixed',
+          top: 3,
+          left: 8,
+          fontSize: '10px',
+          color: 'rgba(255,255,255,0.55)',
+          zIndex: 1000,
+          pointerEvents: 'none',
+        }}
+      >
+        v7
+      </div>
+      <div
+        style={{
          position: 'fixed',
 top: 0,
 left: 0,

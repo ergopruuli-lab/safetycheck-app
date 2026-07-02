@@ -107,6 +107,8 @@ function App() {
   const [loginEmail, setLoginEmail] = useState('')
 const [loginPassword, setLoginPassword] = useState('')
   const [successType, setSuccessType] = useState('')
+  // true ainult kasutaja kõige esimesel sisselogimisel selles seadmes → "Tere tulemast!"
+  const [isFirstVisit, setIsFirstVisit] = useState(false)
 useEffect(() => {
   if (screen === 'home' && successType === 'register') {
     const timer = setTimeout(() => {
@@ -589,23 +591,6 @@ WebkitOverflowScrolling: 'touch',
     {profile.full_name.charAt(0).toUpperCase()}
   </div>
 )}
-      <div
-        style={{
-          position: 'absolute',
-          top: 6,
-          left: 6,
-          fontSize: '11px',
-          fontWeight: 'bold',
-          color: '#ffffff',
-          background: '#dc2626',
-          padding: '2px 6px',
-          borderRadius: '6px',
-          zIndex: 1000,
-          pointerEvents: 'none',
-        }}
-      >
-        v15
-      </div>
       <div
         style={{
          position: 'absolute',
@@ -1093,6 +1078,15 @@ onClick={async () => {
     setIsAdmin(false)
   }
 
+  // Esimene sisselogimine selles seadmes → "Tere tulemast!", edaspidi "Tere tulemast tagasi!"
+  const welcomedKey = 'sc_welcomed_' + data.user.id
+  if (!localStorage.getItem(welcomedKey)) {
+    setIsFirstVisit(true)
+    localStorage.setItem(welcomedKey, '1')
+  } else {
+    setIsFirstVisit(false)
+  }
+
   setIsLoggedIn(true)
   setLoginEmail('')
   setLoginPassword('')
@@ -1451,13 +1445,14 @@ setScreen('success')
             }}
           >
 <h2 style={titleStyle}>
-  {successType === 'register'
+  {isFirstVisit
     ? t('welcomeNew')
     : t('welcomeBack')}
 </h2>
 
      <button
   onClick={() => {
+  setIsFirstVisit(false)
   setStreet('')
   setHouseNumber('')
   setCity('')

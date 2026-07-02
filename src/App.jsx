@@ -423,10 +423,10 @@ WebkitOverflowScrolling: 'touch',
         background: '#f4f6f2',
   padding:
   screen === 'risk-measures'
-    ? 'calc(env(safe-area-inset-top) + 100px) 24px 140px'
+    ? '100px 24px 140px'
     : screen === 'logs'
-    ? 'calc(env(safe-area-inset-top) + 100px) 24px 110px'
-    : 'calc(env(safe-area-inset-top) + 80px) 20px 80px',
+    ? '100px 24px 110px'
+    : '80px 20px 80px',
         fontFamily: 'Arial, sans-serif',
         boxSizing: 'border-box',
       }}
@@ -434,7 +434,7 @@ WebkitOverflowScrolling: 'touch',
 {isLoggedIn && profile?.full_name && (
 <div style={{
   position: 'fixed',
-  top: 'calc(env(safe-area-inset-top) + 20px)',
+  top: 20,
   right: 20,
   width: 40,
   height: 40,
@@ -455,7 +455,7 @@ WebkitOverflowScrolling: 'touch',
       <div
         style={{
           position: 'fixed',
-          top: 'calc(env(safe-area-inset-top) + 3px)',
+          top: 3,
           left: 8,
           fontSize: '10px',
           color: 'rgba(255,255,255,0.55)',
@@ -463,23 +463,12 @@ WebkitOverflowScrolling: 'touch',
           pointerEvents: 'none',
         }}
       >
-        v8
+        v9
       </div>
       <div
         style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: 'env(safe-area-inset-top)',
-          background: '#111827',
-          zIndex: 11,
-        }}
-      />
-      <div
-        style={{
          position: 'fixed',
-top: 'env(safe-area-inset-top)',
+top: 0,
 left: 0,
           width: '100%',
           height: '70px',
@@ -2371,23 +2360,10 @@ if (r.key === 'custom') {
 
       
      {screen !== 'language' && (
-       <div
-         style={{
-           position: 'fixed',
-           bottom: 0,
-           left: 0,
-           width: '100%',
-           height: 'env(safe-area-inset-bottom)',
-           background: '#f4f6f2',
-           zIndex: 998,
-         }}
-       />
-     )}
-     {screen !== 'language' && (
         <div
          style={{
   position: 'fixed',
-  bottom: 'env(safe-area-inset-bottom)',
+  bottom: '0',
   left: '0',
   width: '100%',
   height: '70px',

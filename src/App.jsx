@@ -466,19 +466,6 @@ WebkitOverflowScrolling: 'touch',
 )}
       <div
         style={{
-          position: 'absolute',
-          top: 3,
-          left: 8,
-          fontSize: '10px',
-          color: 'rgba(255,255,255,0.55)',
-          zIndex: 1000,
-          pointerEvents: 'none',
-        }}
-      >
-        v13
-      </div>
-      <div
-        style={{
          position: 'absolute',
 top: 0,
 left: 0,
